@@ -12,11 +12,12 @@ import (
 var Usage = `To analysis and save and query structured AST tree.
 
 Usage:
-astool analysis <file>
-astool locate <function>
-astool trace <function>:<arg>
+astool analysis <file>			To analysis target file and gather useful information. 
+astool locate <function>		To locate function by name. Be sure all files you need to search were resolved successfully before.
+astool trace <function>:<arg>	To trace the statement inside the function that operates on this parameter.
 astool -h
 astool -v
+
 `
 
 /*Options:

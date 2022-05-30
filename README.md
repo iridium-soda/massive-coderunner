@@ -19,12 +19,13 @@ astool -h
 astool -v
 
 Options:
+analysis <file>         :To analysis target file and gather useful information. 
 locate <function>       :To locate function by name. Be sure all files you need to search were resolved successfully before.
-trace <function>:<arg> :To trace the statement inside the function that operates on this parameter.
--h                  :Show this screen.
--v                  :Show version.
+trace <function>:<arg>  :To trace the statement inside the function that operates on this parameter.
+-h                      :Show this screen.
+-v                      :Show version.
 ```
-# Custom Rewrite
+# Self-Compile
 
 # TODO
 - [ ] Batch process files
