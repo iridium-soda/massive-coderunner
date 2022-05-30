@@ -13,19 +13,22 @@ To analysis and save and query structured AST tree.
 
 Usage:
 astool analysis <file>
-astool locate [-f <function>] [-t <function>:<arg>]
+astool locate <function>
+astool trace <function>:<arg>
 astool -h
 astool -v
 
 Options:
+locate <function>       :To locate function by name. Be sure all files you need to search were resolved successfully before.
+trace <function>:<arg> :To trace the statement inside the function that operates on this parameter.
 -h                  :Show this screen.
--f <function>       :To locate function by name. Be sure all files you need to search were resolved successfully before.
--t <function>:<arg> :To trace the statement inside the function that operates on this parameter.
 -v                  :Show version.
 ```
+# Custom Rewrite
 
 # TODO
 - [ ] Batch process files
 - [ ] Better performance
 - [ ] Limited workspace
+- [ ] Database added for analysis data?
 - [ ] ...
