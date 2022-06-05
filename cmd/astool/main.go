@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/iridium-soda/massive-coderunner/pkg/analysis"
 	"github.com/iridium-soda/massive-coderunner/pkg/utils"
 	"log"
 	"os"
@@ -73,9 +74,14 @@ func main() {
 			}
 		}
 	}
-
+	//Wrong format handle
+	if argNums != 2 {
+		usage()
+		return
+	}
 	//Parse the rest, trace and locate
 	log.Printf("Args got,%s", utils.Slice2String(argsList[:]))
+
 	if argNums != 2 && argsList[0] != "locate" && argsList[0] != "trace" && argsList[0] != "analysis" {
 		usage()
 	} //Check if argsList is valid
@@ -98,6 +104,10 @@ func main() {
 Type:	Analysis
 Target:	%s`, targetFilename)
 		//NOTE: run analyzer here
+		datapath := analysis.Analysis(targetFilename)
+		log.Printf("Analysis successfully, data saved at %s", datapath)
+		return
+
 	} else {
 		if ifLocateFunction {
 			functionName = argsList[1]
