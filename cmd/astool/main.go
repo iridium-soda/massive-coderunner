@@ -143,7 +143,8 @@ Target:	%s`, targetFilename)
 			log.Printf(`Args parsed:
 Type:	Locate
 IfFunction:	%v
-Target:	%s`, ifLocateFunction, targetName)
+IfParas:%v
+Target:	%s`, ifLocateFunction, ifLocateParas, targetName)
 			//Note: run Locator here
 
 		} else {
