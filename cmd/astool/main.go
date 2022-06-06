@@ -10,12 +10,13 @@ import (
 	"strings"
 )
 
-var Usage = `To analysis and save and query structured AST tree.
+var Usage = `---------------------------------------------
+To analysis and save and query structured AST tree.
 
 Usage:
 astool analysis <file>			To analysis target file and gather useful information. 
-astool locate <function>		To locate function by name. Be sure all files you need to search were resolved successfully before.
-astool trace <function>:<arg>	To trace the statement inside the function that operates on this parameter.
+astool locate -f/-p <function>		To locate function by name or paras. Be sure all files you need to search were resolved successfully before.
+astool trace <function>:<arg>		To trace the statement inside the function that operates on this parameter.
 astool -h
 astool -v
 
@@ -29,14 +30,17 @@ trace <function>:<arg> :To trace the statement inside the function that operates
 var (
 	ifHelp           bool
 	ifAnalysis       = false
+	ifLocate         = false
 	ifLocateFunction = false
 	ifTraceArgs      = false
-	ifVersion        bool
+	ifLocateParas    = false
+
+	ifVersion bool
 )
 var version = "v0.0.0"
 var (
 	targetFilename    = "" //For analysis mode
-	functionName      = "" //For locate mode
+	targetName        = "" //For locate mode
 	traceFunctionName = "" //For trace mode
 	traceArg          = "" //For trace mode
 )
@@ -54,7 +58,8 @@ func init() {
 	//Bind flags
 	flag.BoolVar(&ifHelp, "h", false, "Show this screen.")
 	flag.BoolVar(&ifVersion, "v", false, "Show version.")
-
+	flag.BoolVar(&ifLocateFunction, "f", false, "To locate by function name. Using locate command.")
+	flag.BoolVar(&ifLocateParas, "p", false, "To locate by paras name. Using locate command.")
 	//Set logger
 	utils.InitLogger()
 }
@@ -62,6 +67,7 @@ func main() {
 	flag.Parse()
 
 	//Parse helps and version
+
 	argsList, argNums := flag.Args(), flag.NArg()
 	if ifHelp {
 		usage()
@@ -74,24 +80,46 @@ func main() {
 			}
 		}
 	}
-	//Wrong format handle
-	if argNums != 2 {
+
+	//Parse the rest, trace and locate
+	//Correct command should be the followings:
+	//1. astool analysis <filePath>
+	//2. astool locate -f <functionName>
+	//3. astool locate -p <ParasName>
+	//4. astool trace <functionName> <ParaName>
+	log.Printf("Args got,%s", utils.Slice2String(argsList[:]))
+	if argNums == 0 { //Prevent empty command array
+		fmt.Println("Unrecognizable commands. Using analysis, locate or trace.")
 		usage()
 		return
 	}
-	//Parse the rest, trace and locate
-	log.Printf("Args got,%s", utils.Slice2String(argsList[:]))
-
-	if argNums != 2 && argsList[0] != "locate" && argsList[0] != "trace" && argsList[0] != "analysis" {
+	if argsList[0] != "locate" && argsList[0] != "trace" && argsList[0] != "analysis" {
+		fmt.Println("Unrecognizable commands. Using analysis, locate or trace.")
 		usage()
+		return
 	} //Check if argsList is valid
 	if strings.ToLower(argsList[0]) == "analysis" {
+		if argNums != 2 {
+			fmt.Println("Too many or few parameters. Check help for more info.")
+			usage()
+			return
+		}
 		ifAnalysis = true
 	} else {
 		if strings.ToLower(argsList[0]) == "locate" {
-			ifLocateFunction = true
+			if argNums != 3 {
+				fmt.Println("Too many or few parameters. Check help for more info.")
+				usage()
+				return
+			}
+			ifLocate = true
 		} else {
 			if strings.ToLower(argsList[0]) == "trace" {
+				if argNums != 4 {
+					fmt.Println("Too many or few parameters. Check help for more info.")
+					usage()
+					return
+				}
 				ifTraceArgs = true
 			}
 		}
@@ -104,17 +132,20 @@ func main() {
 Type:	Analysis
 Target:	%s`, targetFilename)
 		//NOTE: run analyzer here
-		datapath := analysis.Analysis(targetFilename)
-		log.Printf("Analysis successfully, data saved at %s", datapath)
+		dataPath := analysis.Analysis(targetFilename)
+		log.Printf("Analysis successfully, data saved at %s", dataPath)
 		return
 
 	} else {
-		if ifLocateFunction {
-			functionName = argsList[1]
+		if ifLocate {
+
+			targetName = argsList[1]
 			log.Printf(`Args parsed:
 Type:	Locate
-Target:	%s`, functionName)
+IfFunction:	%v
+Target:	%s`, ifLocateFunction, targetName)
 			//Note: run Locator here
+
 		} else {
 			if ifTraceArgs {
 				tmpSlice := strings.Split(argsList[1], ":") //argList[1] should be <function>:<arg>

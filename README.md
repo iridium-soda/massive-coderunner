@@ -6,7 +6,86 @@
 - 函数内部的搜索模块：给定了一个函数的参数，能够跟踪函数内部对这个参数进行操作的语句
 # Install
 # Sample
+For `Examples/a.go`:
+```go
+package Examples
 
+func a(q int, w int, e int) int {
+	return b(q, w, e)
+}
+func b(q1 int, q2 int, q3 int) int {
+	return q1 + q2 + q3 + 1
+}
+func main() {
+	a(1, 2, 3)
+
+}
+```
+Analysis result is the following and saved in `data/Examples/a.json`
+```json
+[
+  {
+    "Package": "Examples",
+    "Name": "a",
+    "Exported": false,
+    "Receiver": [],
+    "Params": [
+      {
+        "Name": "q",
+        "Type": "int"
+      },
+      {
+        "Name": "w",
+        "Type": "int"
+      },
+      {
+        "Name": "e",
+        "Type": "int"
+      }
+    ],
+    "Results": [
+      {
+        "Name": "",
+        "Type": "int"
+      }
+    ]
+  },
+  {
+    "Package": "Examples",
+    "Name": "b",
+    "Exported": false,
+    "Receiver": [],
+    "Params": [
+      {
+        "Name": "q1",
+        "Type": "int"
+      },
+      {
+        "Name": "q2",
+        "Type": "int"
+      },
+      {
+        "Name": "q3",
+        "Type": "int"
+      }
+    ],
+    "Results": [
+      {
+        "Name": "",
+        "Type": "int"
+      }
+    ]
+  },
+  {
+    "Package": "Examples",
+    "Name": "main",
+    "Exported": false,
+    "Receiver": [],
+    "Params": [],
+    "Results": []
+  }
+]
+```
 # Usage
 To analysis and save and query structured AST tree.
 ```
@@ -33,7 +112,7 @@ trace <function>:<arg>  :To trace the statement inside the function that operate
 # TODO
 - [ ] Batch process files
 - [ ] Better performance
-- [ ] Limited workspace
+- [ ] Limited workspace?
 - [ ] Database added for analysis data?
 - [ ] Bad AST handle
 - [ ] ...
